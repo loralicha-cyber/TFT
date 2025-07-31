@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ranking TFT</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h1 { text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #4CAF50; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Ranking en Vivo - Teamfight Tactics</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Jugador</th>
+        <th>Tag</th>
+        <th>Tier</th>
+        <th>División</th>
+        <th>LP</th>
+        <th>Victorias</th>
+        <th>Derrotas</th>
+        <th>Partidas</th>
+      </tr>
+    </thead>
+    <tbody id="ranking-table">
+      <tr><td colspan="8">Cargando datos...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    fetch('http://localhost:3000/api/players')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById('ranking-table');
+        tbody.innerHTML = '';
+        data.forEach(player => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>\${player.name}</td>
+            <td>\${player.tag}</td>
+            <td>\${player.tier}</td>
+            <td>\${player.rank}</td>
+            <td>\${player.lp}</td>
+            <td>\${player.wins}</td>
+            <td>\${player.losses}</td>
+            <td>\${player.wins + player.losses}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        document.getElementById('ranking-table').innerHTML = '<tr><td colspan="8">Error al cargar datos</td></tr>';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
